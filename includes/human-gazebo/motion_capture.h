@@ -32,7 +32,7 @@
 #include <boost/pointer_cast.hpp>
 
 #include "concert_msgs/Humans.h"
-#include "obstacles/skeleton_node.h"
+#include "human-gazebo/skeleton_node.h"
 
 
 #ifndef GAZEBO_PLUGINS_MOTION_CAPTURE_PLUGIN_H

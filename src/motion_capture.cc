@@ -1,4 +1,4 @@
-#include "obstacles/motion_capture.h"
+#include "human-gazebo/motion_capture.h"
 
 namespace obstacles {
 

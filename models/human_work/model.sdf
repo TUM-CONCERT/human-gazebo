@@ -2,14 +2,14 @@
 <sdf version="1.5">
 <actor name="actor">
   <skin>
-    <filename>../../src/obstacles/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</filename>
+    <filename>../../src/human-gazebo/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</filename>
   </skin>
   <animation name="human_animation">
-    <filename>../../src/obstacles/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</filename>
+    <filename>../../src/human-gazebo/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</filename>
   </animation>
   <!-- Attach the plugin to this model-->
   <plugin name="motion_capture_plugin" filename="libmotion_capture.so">
-    <animation_file>/src/obstacles/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</animation_file>
+    <animation_file>/src/human-gazebo/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</animation_file>
     <frame_rate>50</frame_rate>
     <scaling collision="hip_abdomen_collision" scale="15.0 15.0 1.0"/>
     <scaling collision="hip_rButtock_collision" scale="0.1 0.1 0.1"/>
@@ -34,3 +34,4 @@
   </plugin>  
 </actor>
 </sdf>
+
