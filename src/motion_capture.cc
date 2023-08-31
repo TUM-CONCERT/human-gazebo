@@ -131,8 +131,8 @@ void MotionCapturePlugin::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr
   // Create our ROS node. This acts in a similar manner to
   // the Gazebo node
   this->ros_node_.reset(new ros::NodeHandle("gazebo_client"));
-  std::string topic_name = "/human_joint_pos";
-  this->publisher_ = this->ros_node_->advertise<custom_robot_msgs::PositionsHeadered>(topic_name, 1000);
+  std::string topic_name = "/human_pose_measurement";
+  this->publisher_ = this->ros_node_->advertise<concert_msgs::Humans>(topic_name, 1000);
 
   // ROS Subscribers
   
@@ -215,16 +215,42 @@ void MotionCapturePlugin::OnUpdate(const gazebo::common::UpdateInfo &_info)
     root_transform(2,3) = shift_pos_.Z();
     // Recursively calculate cartesian joint positions.
     CalculateJointPos(node_pose, root_transform, this->root_node_, this->joint_positions_);
-    custom_robot_msgs::PositionsHeadered joint_pos_msg;
+    concert_msgs::Humans joint_pos_msg;
+    concert_msgs::Human3D human1;
+   
     joint_pos_msg.header.stamp = ros::Time(_info.simTime.sec, _info.simTime.nsec);
-    //int i = 0;
-    for (const auto& jp : joint_positions_){
+    joint_pos_msg.header.frame_id = "world";
+    
+    //int map[30] = {
+    //  3,4,13,0,11,
+    //  20,1,9,18,12,
+    //  6,15,12,10,19,
+    //  2,10,19,7,16,
+    //  7,16,8,17,2,
+    //  2,2,2,2,2
+    //  };
+
+    std::string joint_map_profactor_index_to_cmu_name[30] = {
+      "hip", "lButtock", "rButtock", "abdomen", "lThigh",
+      "rThigh", "chest", "lShin", "rShin", "neck",
+      "lFoot", "rFoot", "neck", "lShldr", "rShldr",
+      "head", "lShldr", "rShldr", "lForeArm", "rForeArm",
+      "lForeArm", "rForeArm", "lHand", "rHand", "head",
+      "head", "head", "head", "head", "head"
+    }; 
+
+    for (int i = 0; i< 30; i++){
+      const auto& jp = joint_positions_[joint_map_profactor_index_to_cmu_name[i]];
       geometry_msgs::Point p;
-      p.x = jp.second.X();
-      p.y = jp.second.Y();
-      p.z = jp.second.Z();
-      joint_pos_msg.data.push_back(p);
+      p.x = jp.X();
+      p.y = jp.Y();
+      p.z = jp.Z();
+
+      concert_msgs::Keypoint3D keypoint;
+      keypoint.pose.position = p;
+      human1.keypoints[i] = keypoint;
     }
+    joint_pos_msg.humans.push_back(human1);
     this->publisher_.publish(joint_pos_msg);
   }
 }
