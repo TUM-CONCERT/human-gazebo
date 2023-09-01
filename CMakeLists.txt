@@ -36,7 +36,7 @@ catkin_package(
   DEPENDS gazebo_ros system_lib
 )
 
-add_library(motion_capture SHARED includes/obstacles/motion_capture.h includes/obstacles/skeleton_node.h
+add_library(motion_capture SHARED includes/human-gazebo/motion_capture.h includes/human-gazebo/skeleton_node.h
     src/motion_capture.cc)
 add_dependencies(motion_capture ${catkin_EXPORTED_TARGETS})
 target_link_libraries(motion_capture ${catkin_LIBRARIES} ${GAZEBO_LIBRARIES} ${LIBXML2_LIBRARIES})
