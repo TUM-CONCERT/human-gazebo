@@ -131,7 +131,7 @@ void MotionCapturePlugin::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr
   // Create our ROS node. This acts in a similar manner to
   // the Gazebo node
   this->ros_node_.reset(new ros::NodeHandle("gazebo_client"));
-  std::string topic_name = "/human_pose_measurement";
+  std::string topic_name = "/sara-shield/human_pose_measurement";
   this->publisher_ = this->ros_node_->advertise<concert_msgs::Humans>(topic_name, 1000);
 
   // ROS Subscribers
@@ -215,8 +215,8 @@ void MotionCapturePlugin::OnUpdate(const gazebo::common::UpdateInfo &_info)
     root_transform(2,3) = shift_pos_.Z();
     // Recursively calculate cartesian joint positions.
     CalculateJointPos(node_pose, root_transform, this->root_node_, this->joint_positions_);
-    concert_msgs::Humans joint_pos_msg;
-    concert_msgs::Human3D human1;
+    concert_msgs::Humans humans_measurement_msg;
+    concert_msgs::Human3D human_pose_msg;
    
     joint_pos_msg.header.stamp = ros::Time(_info.simTime.sec, _info.simTime.nsec);
     joint_pos_msg.header.frame_id = "world";
@@ -248,9 +248,9 @@ void MotionCapturePlugin::OnUpdate(const gazebo::common::UpdateInfo &_info)
 
       concert_msgs::Keypoint3D keypoint;
       keypoint.pose.position = p;
-      human1.keypoints[i] = keypoint;
+      human_pose_msg.keypoints[i] = keypoint;
     }
-    joint_pos_msg.humans.push_back(human1);
+    humans_measurement_msg.humans.push_back(human_pose_msg);
     this->publisher_.publish(joint_pos_msg);
   }
 }
