@@ -221,25 +221,23 @@ void MotionCapturePlugin::OnUpdate(const gazebo::common::UpdateInfo &_info)
     humans_measurement_msg.header.stamp = ros::Time(_info.simTime.sec, _info.simTime.nsec);
     humans_measurement_msg.header.frame_id = "world";
     
-    //int map[30] = {
+    //int map[25] = {
     //  3,4,13,0,11,
     //  20,1,9,18,12,
     //  6,15,12,10,19,
     //  2,10,19,7,16,
-    //  7,16,8,17,2,
-    //  2,2,2,2,2
+    //  7,16,8,17,2
     //  };
 
-    std::string joint_map_profactor_index_to_cmu_name[30] = {
+    std::string joint_map_profactor_index_to_cmu_name[25] = {
       "hip", "lButtock", "rButtock", "abdomen", "lThigh",
       "rThigh", "chest", "lShin", "rShin", "neck",
       "lFoot", "rFoot", "neck", "lShldr", "rShldr",
       "head", "lShldr", "rShldr", "lForeArm", "rForeArm",
-      "lForeArm", "rForeArm", "lHand", "rHand", "head",
-      "head", "head", "head", "head", "head"
+      "lForeArm", "rForeArm", "lHand", "rHand", "head"
     }; 
 
-    for (int i = 0; i< 30; i++){
+    for (int i=0; i<25; i++){
       const auto& jp = joint_positions_[joint_map_profactor_index_to_cmu_name[i]];
       geometry_msgs::Point p;
       p.x = jp.X();
