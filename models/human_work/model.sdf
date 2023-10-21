@@ -1,6 +1,6 @@
 <?xml version="1.0"?>
 <sdf version="1.5">
-<actor name="actor">
+<actor name="human0">
   <skin>
     <filename>../../src/human-gazebo/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</filename>
   </skin>
@@ -11,6 +11,7 @@
   <plugin name="motion_capture_plugin" filename="libmotion_capture.so">
     <animation_file>/src/human-gazebo/animations/working/CMU_human_no_hand_62_01_gazebo_conform.dae</animation_file>
     <frame_rate>50</frame_rate>
+    <human_index>0</human_index>
     <scaling collision="hip_abdomen_collision" scale="15.0 15.0 1.0"/>
     <scaling collision="hip_rButtock_collision" scale="0.1 0.1 0.1"/>
     <scaling collision="hip_lButtock_collision" scale="0.1 0.1 0.1"/>

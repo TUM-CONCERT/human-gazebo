@@ -139,6 +139,11 @@ class GZ_PLUGIN_VISIBLE MotionCapturePlugin : public gazebo::ModelPlugin {
    */
   double animation_time_ = 0.0;
 
+  /**
+   * @brief the label_id of the human (important for simulations with multiple humans)
+   */
+  int human_index_ = 0;
+
  public:
   /**
    * @brief Constructor

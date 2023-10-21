@@ -43,6 +43,11 @@ void MotionCapturePlugin::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr
       ROS_WARN("Selected frame rate for motion capture system is <= 0. Resetting to 100 Hz.");
     }
   }
+  
+  if(_sdf->HasElement("human_index")){
+    human_index_ = _sdf->Get<double>("human_index");
+  }
+
   this->dt_update_ = 1/frame_rate;
   this->last_update_time_ = -1;
   
@@ -220,6 +225,8 @@ void MotionCapturePlugin::OnUpdate(const gazebo::common::UpdateInfo &_info)
    
     humans_measurement_msg.header.stamp = ros::Time(_info.simTime.sec, _info.simTime.nsec);
     humans_measurement_msg.header.frame_id = "world";
+
+    human_pose_msg.label_id = human_index_;
     
     //int map[25] = {
     //  3,4,13,0,11,
