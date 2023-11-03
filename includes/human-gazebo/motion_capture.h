@@ -32,7 +32,7 @@
 #include <boost/pointer_cast.hpp>
 
 #include "concert_msgs/Humans.h"
-#include "obstacles/skeleton_node.h"
+#include "human-gazebo/skeleton_node.h"
 
 
 #ifndef GAZEBO_PLUGINS_MOTION_CAPTURE_PLUGIN_H
@@ -138,6 +138,11 @@ class GZ_PLUGIN_VISIBLE MotionCapturePlugin : public gazebo::ModelPlugin {
    * @brief Animation time in seconds
    */
   double animation_time_ = 0.0;
+
+  /**
+   * @brief the label_id of the human (important for simulations with multiple humans)
+   */
+  int human_index_ = 0;
 
  public:
   /**

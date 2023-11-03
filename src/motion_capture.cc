@@ -1,4 +1,4 @@
-#include "obstacles/motion_capture.h"
+#include "human-gazebo/motion_capture.h"
 
 namespace obstacles {
 
@@ -43,6 +43,11 @@ void MotionCapturePlugin::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr
       ROS_WARN("Selected frame rate for motion capture system is <= 0. Resetting to 100 Hz.");
     }
   }
+  
+  if(_sdf->HasElement("human_index")){
+    human_index_ = _sdf->Get<double>("human_index");
+  }
+
   this->dt_update_ = 1/frame_rate;
   this->last_update_time_ = -1;
   
@@ -131,8 +136,8 @@ void MotionCapturePlugin::Load(gazebo::physics::ModelPtr _model, sdf::ElementPtr
   // Create our ROS node. This acts in a similar manner to
   // the Gazebo node
   this->ros_node_.reset(new ros::NodeHandle("gazebo_client"));
-  std::string topic_name = "/human_joint_pos";
-  this->publisher_ = this->ros_node_->advertise<custom_robot_msgs::PositionsHeadered>(topic_name, 1000);
+  std::string topic_name = "/sara_shield/human_pose_measurement";
+  this->publisher_ = this->ros_node_->advertise<concert_msgs::Humans>(topic_name, 1000);
 
   // ROS Subscribers
   
@@ -215,17 +220,43 @@ void MotionCapturePlugin::OnUpdate(const gazebo::common::UpdateInfo &_info)
     root_transform(2,3) = shift_pos_.Z();
     // Recursively calculate cartesian joint positions.
     CalculateJointPos(node_pose, root_transform, this->root_node_, this->joint_positions_);
-    custom_robot_msgs::PositionsHeadered joint_pos_msg;
-    joint_pos_msg.header.stamp = ros::Time(_info.simTime.sec, _info.simTime.nsec);
-    //int i = 0;
-    for (const auto& jp : joint_positions_){
+    concert_msgs::Humans humans_measurement_msg;
+    concert_msgs::Human3D human_pose_msg;
+   
+    humans_measurement_msg.header.stamp = ros::Time(_info.simTime.sec, _info.simTime.nsec);
+    humans_measurement_msg.header.frame_id = "world";
+
+    human_pose_msg.label_id = human_index_;
+    
+    //int map[25] = {
+    //  3,4,13,0,11,
+    //  20,1,9,18,12,
+    //  6,15,12,10,19,
+    //  2,10,19,7,16,
+    //  7,16,8,17,2
+    //  };
+
+    std::string joint_map_profactor_index_to_cmu_name[25] = {
+      "hip", "lButtock", "rButtock", "abdomen", "lThigh",
+      "rThigh", "chest", "lShin", "rShin", "neck",
+      "lFoot", "rFoot", "neck", "lShldr", "rShldr",
+      "head", "lShldr", "rShldr", "lForeArm", "rForeArm",
+      "lForeArm", "rForeArm", "lHand", "rHand", "head"
+    }; 
+
+    for (int i=0; i<25; i++){
+      const auto& jp = joint_positions_[joint_map_profactor_index_to_cmu_name[i]];
       geometry_msgs::Point p;
-      p.x = jp.second.X();
-      p.y = jp.second.Y();
-      p.z = jp.second.Z();
-      joint_pos_msg.data.push_back(p);
+      p.x = jp.X();
+      p.y = jp.Y();
+      p.z = jp.Z();
+
+      concert_msgs::Keypoint3D keypoint;
+      keypoint.pose.position = p;
+      human_pose_msg.keypoints[i] = keypoint;
     }
-    this->publisher_.publish(joint_pos_msg);
+    humans_measurement_msg.humans.push_back(human_pose_msg);
+    this->publisher_.publish(humans_measurement_msg);
   }
 }
 
