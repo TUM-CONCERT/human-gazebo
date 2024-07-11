@@ -25,4 +25,5 @@ Install this project just like any other ros packages
 
 ## Usage
 This package is not intended to be used solely.
-For debugging, `roslaunch human-gazebo test_human_work.launch` can start gazebo with the human in the world.
+For debugging, `roslaunch human-gazebo test_human_work.launch` can start gazebo with the human in the world. The result will look like below:
+![image](https://github.com/TUM-CONCERT/human-gazebo/assets/120781514/c73014c0-a37a-44a1-97b3-2cf6a38d47ca)
